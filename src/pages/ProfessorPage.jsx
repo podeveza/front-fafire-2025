@@ -5,7 +5,7 @@ import {
   Button, Table, Thead, Tbody, Tr, Th, Td,
   IconButton, useDisclosure, Modal, ModalOverlay,
   ModalContent, ModalHeader, ModalCloseButton,
-  ModalBody, ModalFooter, useToast
+  ModalBody, ModalFooter, useToast, Stack, Text,
 } from '@chakra-ui/react';
 import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
 
@@ -125,85 +125,92 @@ export default function ProfessorPage() {
 
   return (
     <Box>
-      <Heading size="lg" mb={4}>Gerenciar Professores</Heading>
+      <Stack direction={{ base: 'column', md: 'row' }} justify="space-between" align="center" mb={4}>
+        <Heading size="lg">Gerenciar Professores</Heading>
+        <Button colorScheme="green" onClick={() => {
+          setName('');
+          setCpf('');
+          setDepartmentId('');
+          setEditProfessorId(null);
+          onOpen();
+        }}>
+          Novo Professor
+        </Button>
+      </Stack>
 
-      <Button colorScheme="green" onClick={() => {
-        setName('');
-        setCpf('');
-        setDepartmentId('');
-        setEditProfessorId(null);
-        onOpen();
-      }}>Novo Professor</Button>
-
-      <Table variant="simple" mt={6}>
-        <Thead>
-          <Tr>
-            <Th>Nome</Th>
-            <Th>CPF</Th>
-            <Th>Departamento</Th>
-            <Th>Ações</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {professors.map(p => (
-            <Tr key={p.id}>
-              <Td>{p.name}</Td>
-              <Td>{p.cpf}</Td>
-              <Td>{departments.find(d => d.id === p.departmentId)?.name || 'Sem departamento'}</Td>
-              <Td>
-                <IconButton
-                  size="sm"
-                  icon={<EditIcon />}
-                  colorScheme="blue"
-                  onClick={() => handleEdit(p)}
-                  mr={2}
-                  aria-label="Editar"
-                />
-                <IconButton
-                  size="sm"
-                  icon={<DeleteIcon />}
-                  colorScheme="red"
-                  onClick={() => handleDelete(p.id)}
-                  aria-label="Excluir"
-                />
-              </Td>
+      <Box overflowX="auto">
+        <Table variant="simple" size="sm">
+          <Thead>
+            <Tr>
+              <Th>Nome</Th>
+              <Th>CPF</Th>
+              <Th>Departamento</Th>
+              <Th>Ações</Th>
             </Tr>
-          ))}
-        </Tbody>
-      </Table>
+          </Thead>
+          <Tbody>
+            {professors.map(p => (
+              <Tr key={p.id}>
+                <Td><Text whiteSpace="nowrap">{p.name}</Text></Td>
+                <Td><Text whiteSpace="nowrap">{p.cpf}</Text></Td>
+                <Td><Text whiteSpace="nowrap">{departments.find(d => d.id === p.departmentId)?.name || 'Sem departamento'}</Text></Td>
+                <Td>
+                  <IconButton
+                    size="sm"
+                    icon={<EditIcon />}
+                    colorScheme="blue"
+                    onClick={() => handleEdit(p)}
+                    mr={2}
+                    aria-label="Editar"
+                  />
+                  <IconButton
+                    size="sm"
+                    icon={<DeleteIcon />}
+                    colorScheme="red"
+                    onClick={() => handleDelete(p.id)}
+                    aria-label="Excluir"
+                  />
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </Box>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered size={{ base: 'xs', md: 'md' }}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{editProfessorId ? 'Editar Professor' : 'Novo Professor'}</ModalHeader>
           <ModalCloseButton />
           <form onSubmit={handleSubmit}>
             <ModalBody>
-              <FormControl isRequired mb={3}>
-                <FormLabel>Nome</FormLabel>
-                <Input value={name} onChange={e => setName(e.target.value)} />
-              </FormControl>
-              <FormControl isRequired mb={3}>
-                <FormLabel>CPF</FormLabel>
-                <Input
-                  value={cpf}
-                  onChange={e => setCpf(e.target.value)}
-                  maxLength={11}
-                  placeholder="Somente números"
-                />
-              </FormControl>
-              <FormControl isRequired>
-                <FormLabel>Departamento</FormLabel>
-                <Select
-                  placeholder="Selecione o departamento"
-                  value={departmentId}
-                  onChange={e => setDepartmentId(e.target.value)}
-                >
-                  {departments.map(d => (
-                    <option key={d.id} value={d.id}>{d.name}</option>
-                  ))}
-                </Select>
-              </FormControl>
+              <Stack spacing={3}>
+                <FormControl isRequired>
+                  <FormLabel>Nome</FormLabel>
+                  <Input value={name} onChange={e => setName(e.target.value)} />
+                </FormControl>
+                <FormControl isRequired>
+                  <FormLabel>CPF</FormLabel>
+                  <Input
+                    value={cpf}
+                    onChange={e => setCpf(e.target.value)}
+                    maxLength={11}
+                    placeholder="Somente números"
+                  />
+                </FormControl>
+                <FormControl isRequired>
+                  <FormLabel>Departamento</FormLabel>
+                  <Select
+                    placeholder="Selecione o departamento"
+                    value={departmentId}
+                    onChange={e => setDepartmentId(e.target.value)}
+                  >
+                    {departments.map(d => (
+                      <option key={d.id} value={d.id}>{d.name}</option>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Stack>
             </ModalBody>
             <ModalFooter>
               <Button colorScheme="green" type="submit" mr={3}>Salvar</Button>
