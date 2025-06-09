@@ -106,47 +106,55 @@ export default function DepartmentPage() {
   };
 
   return (
-    <Box>
+    <Box px={{ base: 4, md: 8 }} py={6} maxW="100%" overflowX="auto">
       <Heading size="lg" mb={4}>Gerenciar Departamentos</Heading>
 
-      <Button colorScheme="green" onClick={() => {
-        setName('');
-        setEditDepartmentId(null);
-        onOpen();
-      }}>Novo Departamento</Button>
+      <Button
+        colorScheme="green"
+        mb={4}
+        onClick={() => {
+          setName('');
+          setEditDepartmentId(null);
+          onOpen();
+        }}
+      >
+        Novo Departamento
+      </Button>
 
-      <Table variant="simple" mt={6}>
-        <Thead>
-          <Tr>
-            <Th>Nome</Th>
-            <Th>Ações</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {departments.map(d => (
-            <Tr key={d.id}>
-              <Td>{d.name}</Td>
-              <Td>
-                <IconButton
-                  size="sm"
-                  icon={<EditIcon />}
-                  colorScheme="blue"
-                  onClick={() => handleEdit(d)}
-                  mr={2}
-                  aria-label="Editar"
-                />
-                <IconButton
-                  size="sm"
-                  icon={<DeleteIcon />}
-                  colorScheme="red"
-                  onClick={() => handleDelete(d.id)}
-                  aria-label="Excluir"
-                />
-              </Td>
+      <Box overflowX="auto">
+        <Table variant="simple" mt={4} minW="400px">
+          <Thead>
+            <Tr>
+              <Th>Nome</Th>
+              <Th>Ações</Th>
             </Tr>
-          ))}
-        </Tbody>
-      </Table>
+          </Thead>
+          <Tbody>
+            {departments.map(d => (
+              <Tr key={d.id}>
+                <Td>{d.name}</Td>
+                <Td>
+                  <IconButton
+                    size="sm"
+                    icon={<EditIcon />}
+                    colorScheme="blue"
+                    onClick={() => handleEdit(d)}
+                    mr={2}
+                    aria-label="Editar"
+                  />
+                  <IconButton
+                    size="sm"
+                    icon={<DeleteIcon />}
+                    colorScheme="red"
+                    onClick={() => handleDelete(d.id)}
+                    aria-label="Excluir"
+                  />
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </Box>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

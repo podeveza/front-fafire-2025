@@ -35,10 +35,21 @@ export default function CoursePage() {
 
   const handleSubmit = e => {
     e.preventDefault();
+    if (!name.trim()) {
+      toast({
+        title: 'Nome obrigatório',
+        description: 'Por favor, preencha o nome do curso.',
+        status: 'warning',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     const method = editCourseId ? 'put' : 'post';
     const url = editCourseId ? `${API}/course/${editCourseId}` : `${API}/course`;
 
-    axios[method](url, { name })
+    axios[method](url, { name: name.trim() })
       .then(() => {
         fetchCourses();
         toast({
@@ -89,47 +100,51 @@ export default function CoursePage() {
   };
 
   return (
-    <Box>
+    <Box px={{ base: 4, md: 8 }} py={6} maxW="100%" overflowX="auto">
       <Heading size="lg" mb={4}>Gerenciar Cursos</Heading>
 
       <Button colorScheme="green" onClick={() => {
         setName('');
         setEditCourseId(null);
         onOpen();
-      }}>Novo Curso</Button>
+      }}>
+        Novo Curso
+      </Button>
 
-      <Table variant="simple" mt={6}>
-        <Thead>
-          <Tr>
-            <Th>Nome</Th>
-            <Th>Ações</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {courses.map(c => (
-            <Tr key={c.id}>
-              <Td>{c.name}</Td>
-              <Td>
-                <IconButton
-                  size="sm"
-                  icon={<EditIcon />}
-                  colorScheme="blue"
-                  onClick={() => handleEdit(c)}
-                  mr={2}
-                  aria-label="Editar"
-                />
-                <IconButton
-                  size="sm"
-                  icon={<DeleteIcon />}
-                  colorScheme="red"
-                  onClick={() => handleDelete(c.id)}
-                  aria-label="Excluir"
-                />
-              </Td>
+      <Box overflowX="auto">
+        <Table variant="simple" mt={6} minW="400px">
+          <Thead>
+            <Tr>
+              <Th>Nome</Th>
+              <Th>Ações</Th>
             </Tr>
-          ))}
-        </Tbody>
-      </Table>
+          </Thead>
+          <Tbody>
+            {courses.map(c => (
+              <Tr key={c.id}>
+                <Td>{c.name}</Td>
+                <Td>
+                  <IconButton
+                    size="sm"
+                    icon={<EditIcon />}
+                    colorScheme="blue"
+                    onClick={() => handleEdit(c)}
+                    mr={2}
+                    aria-label="Editar"
+                  />
+                  <IconButton
+                    size="sm"
+                    icon={<DeleteIcon />}
+                    colorScheme="red"
+                    onClick={() => handleDelete(c.id)}
+                    aria-label="Excluir"
+                  />
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </Box>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -140,7 +155,10 @@ export default function CoursePage() {
             <ModalBody>
               <FormControl isRequired>
                 <FormLabel>Nome</FormLabel>
-                <Input value={name} onChange={e => setName(e.target.value)} />
+                <Input
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                />
               </FormControl>
             </ModalBody>
             <ModalFooter>
